@@ -42,7 +42,6 @@ public class NumberTriangle {
         this.left = left;
     }
 
-
     public void setRight(NumberTriangle right) {
         this.right = right;
     }
@@ -88,10 +87,18 @@ public class NumberTriangle {
      *
      */
     public int retrieve(String path) {
-        // TODO implement this method
-        return -1;
+        if (path.isEmpty()){
+            return root;
+        }
+        else if (path.charAt(0) == 'r')
+        {
+            return this.right.retrieve(path.substring(1));
+        }
+        else {
+            return this.left.retrieve(path.substring(1));
+        }
     }
-
+    // so that the branchy branch works
     /** Read in the NumberTriangle structure from a file.
      *
      * You may assume that it is a valid format with a height of at least 1,
@@ -110,21 +117,26 @@ public class NumberTriangle {
         BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
 
 
-        // TODO define any variables that you want to use to store things
-
-        // will need to return the top of the NumberTriangle,
-        // so might want a variable for that.
-        NumberTriangle top = null;
-
         String line = br.readLine();
+
+        NumberTriangle top = new NumberTriangle(Integer.parseInt(line));
+        NumberTriangle[] prevLine = {top};
+
         while (line != null) {
 
-            // remove when done; this line is included so running starter code prints the contents of the file
-            System.out.println(line);
+            //read the current line
+            NumberTriangle[] currLine = new NumberTriangle[line.length()];
+            String[] lineSplit = line.split(" ");
+            for (int i = 0; i < lineSplit.length; i++) {
+                currLine[i] = new NumberTriangle(Integer.parseInt(lineSplit[i]));
+            }
 
-            // TODO process the line
+            for (int i = 0; i < prevLine.length; i++) {
+                prevLine[i].setRight(currLine[i]);
+                prevLine[i].setLeft(currLine[i + 1]);
+            }
 
-            //read the next line
+            prevLine = currLine;
             line = br.readLine();
         }
         br.close();
